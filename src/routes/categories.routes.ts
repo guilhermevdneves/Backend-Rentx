@@ -1,30 +1,28 @@
-import { Router } from 'express';
-import { v4 } from 'uuid';
-import Category from '../model/Category';
-import CategoryRepository from '../repositories/CategoryRepository';
+import { Router } from 'express'
+import { v4 } from 'uuid'
+import Category from '../model/Category'
+import CategoryRepository from '../repositories/CategoryRepository'
 
-const app = Router();
+const app = Router()
 
-const categoryRepository =  new CategoryRepository();
+const categoryRepository = new CategoryRepository()
 
 app.get('/', (req, resp) => {
-
-    return resp.status(200).json({ testing: true })
-});
+  return resp.status(200).json(categoryRepository.list())
+})
 
 app.post('/', (req, resp) => {
-    const { name, description } = req.body;
+  const { name, description } = req.body
 
-    const newCategory: Category = {
-        id: v4(),
-        name,
-        description,
-        created_at: new Date()
-    }
-    
-    categoryRepository.create(newCategory);
+  const categoryExists = categoryRepository.findByName(name)
 
-    return resp.status(200).json(newCategory)
-});
+  if (categoryExists) {
+    return resp.status(400).send('A categoria já existe')
+  }
 
-export default app;
+  categoryRepository.create({ name, description })
+
+  return resp.status(200).send()
+})
+
+export default app

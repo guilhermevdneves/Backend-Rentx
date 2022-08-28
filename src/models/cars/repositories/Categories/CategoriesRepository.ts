@@ -1,5 +1,6 @@
 import { v4 } from 'uuid'
-import Category from '../model/Category'
+import Category from '../../model/Category'
+import { ICategoriesRepository } from './ICategoriesRepository'
 /**
  *  This class is going to access a DATABASE in the future
  *
@@ -7,7 +8,7 @@ import Category from '../model/Category'
  *
  */
 
-class CategoryRepository {
+class CategoriesRepository implements ICategoriesRepository {
   private categories: Category[]
 
   constructor () {
@@ -28,11 +29,11 @@ class CategoryRepository {
     return this.categories
   }
 
-  findByName (name: string): Category {
+  findByName (name: string): any {
     const category = this.categories.find(cate => cate.name === name)
 
     return category
   }
 }
 
-export default CategoryRepository
+export default CategoriesRepository

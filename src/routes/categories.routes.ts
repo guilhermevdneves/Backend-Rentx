@@ -1,7 +1,8 @@
 import { Router } from 'express'
 import { v4 } from 'uuid'
-import Category from '../model/Category'
-import CategoryRepository from '../repositories/CategoryRepository'
+import Category from '../models/cars/model/Category'
+import CategoryRepository from '../models/cars/repositories/Categories/CategoriesRepository'
+import { CreateCategoryService } from '../models/cars/services/CreateCategoryService'
 
 const app = Router()
 
@@ -13,14 +14,9 @@ app.get('/', (req, resp) => {
 
 app.post('/', (req, resp) => {
   const { name, description } = req.body
+  const createCategoryService = new CreateCategoryService(categoryRepository)
 
-  const categoryExists = categoryRepository.findByName(name)
-
-  if (categoryExists) {
-    return resp.status(400).send('A categoria já existe')
-  }
-
-  categoryRepository.create({ name, description })
+  createCategoryService.execute({ name, description })
 
   return resp.status(200).send()
 })
